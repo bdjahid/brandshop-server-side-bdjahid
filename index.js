@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 const app = express();
 require('dotenv').config()
 const port = process.env.PORT || 7000;
@@ -60,7 +61,10 @@ async function run() {
             res.send(result)
         })
         app.delete('/car/:id', async (req, res) => {
-
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await carCollection.deleteOne(query)
+            res.send(result)
         })
 
         // 4 step
