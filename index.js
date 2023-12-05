@@ -39,7 +39,7 @@ async function run() {
 
         const carCollection = client.db('carDB').collection('car')
 
-
+        // 2 step
         app.get('/car', async (req, res) => {
             const cursor = carCollection.find();
             const result = await cursor.toArray();
@@ -47,7 +47,7 @@ async function run() {
         })
 
 
-        // 3
+        // 3 step
         app.get('/car/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
@@ -65,11 +65,25 @@ async function run() {
             res.send(result)
         })
 
-        // 4
+        // 4 step
         app.put('/car/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id)
-
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true }
+            const updateCar = req.body;
+            const car = {
+                $set: {
+                    photo: updateCar.photo,
+                    name: updateCar.name,
+                    brand: updateCar.brand,
+                    price: updateCar.price,
+                    rating: updateCar.rating,
+                    type: updateCar.type
+                }
+            }
+            const result = await carCollection.updateOne(filter, car, options)
+            res.send(result)
         })
 
 
