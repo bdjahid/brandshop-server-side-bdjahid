@@ -65,6 +65,13 @@ async function run() {
             res.send(result)
         })
 
+        // 4
+        app.put('/car/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+
+        })
+
 
 
 
