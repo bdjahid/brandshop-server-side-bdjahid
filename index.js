@@ -13,13 +13,8 @@ app.get('/', (req, res) => {
 })
 
 
-// houseCar
-// ZjKP2co7mXRLPrL9
 
-// console.log(process.env.DB_USER)
-// console.log(process.env.DB_PASS)
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // const uri = "mongodb+srv://houseCar:ZjKP2co7mXRLPrL9@cluster0.xipfv.mongodb.net/?retryWrites=true&w=majority";
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xipfv.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -63,6 +58,9 @@ async function run() {
             console.log(newCar);
             const result = await carCollection.insertOne(newCar);
             res.send(result)
+        })
+        app.delete('/car/:id', async (req, res) => {
+
         })
 
         // 4 step
