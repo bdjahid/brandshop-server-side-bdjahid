@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -26,9 +26,10 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        client.connect();
 
         const carCollection = client.db('carDB').collection('car')
+        const userCollection = client.db("carDB").collection('user')
 
 
         app.get('/car', async (req, res) => {
@@ -37,12 +38,47 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/car/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await carCollection.findOne(query)
+            res.send(result)
+        })
         app.post('/car', async (req, res) => {
             const newCar = req.body;
             console.log(newCar);
             const result = await carCollection.insertOne(newCar);
             res.send(result)
         })
+
+        app.put('/car/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true }
+            const updateCar = req.body;
+            const car = {
+                $set: {
+                    photo: updateCar.photo,
+                    name: updateCar.name,
+                    brand: updateCar.brand,
+                    price: updateCar.price,
+                    rating: updateCar.rating,
+                    type: updateCar.type
+                }
+            }
+            const result = await carCollection.updateOne(filter, car, options)
+            res.send(result)
+        })
+
+
+        // user related apis
+
+        // app.post('/user', async (req, res) => {
+        //     const user = req.body;
+        //     console.log(user)
+        //     const result = await userCollection.insertOne(user)
+        //     res.send(result)
+        // })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
