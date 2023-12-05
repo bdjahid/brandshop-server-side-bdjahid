@@ -46,6 +46,17 @@ async function run() {
             res.send(result)
         })
 
+
+        // 3
+        app.get('/car/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await carCollection.findOne(query)
+            res.send(result)
+        })
+
+
+
         // 1 step
         app.post('/car', async (req, res) => {
             const newCar = req.body;
